@@ -3,5 +3,6 @@ addons:
   apt:
     packages:
     - packer
+install: true
 script:
 - packer validate packer.json
