@@ -1,0 +1,7 @@
+language: go
+addons:
+  apt:
+    packages:
+    - packer
+script:
+- packer validate packer.json
