@@ -1,0 +1,20 @@
+{
+  "variables": {
+    "account_file": ""
+  },
+  "builders": [{
+    "type": "googlecompute",
+    "account_file": "{{user `account_file`}}", 
+    "project_id": "icco-cloud",
+    "source_image": "debian-8-jessie-v20161129",
+    "ssh_username": "packer",
+    "zone": "us-central1-c"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sudo apt-get update",
+      "sudo apt-get install -y ansible build-essential"
+    ]
+  }]
+}
