@@ -1,0 +1,72 @@
+# As of 2016-07-15, we use varnish 3.0.5
+
+# This default backend is proxying to nginx which is proxying to Wordprez.
+  backend default {
+    .host = "127.0.0.1";
+    .port = "8080";
+    .probe = {
+      # Every 5 seconds, make sure we can get all slugs in under 150ms
+      .url = "{{ daemon_env_vars.PROBE_URL }}";
+      .timeout = 2s;
+      .interval = 5s;
+
+      # Of the last 10 requests, 8 need to be healthy.
+      .window = 10;
+      .threshold = 8;
+    }
+  }
+
+# Horrible hack to make grace work faster on error (since saint doesn't work then).  Source: http://book.varnish-software.com/3.0/Saving_a_request.html
+backend fail {
+  .host = "127.0.0.1";
+  .port = "21121";
+  .probe = { .url = "/asfasfasf"; .initial = 0; .interval = 1d; }
+}
+
+acl purge {
+  "localhost";
+  "10.3.0.0"/16;
+  "10.4.0.0"/16;
+}
+
+# Grace needs to be the same in here and in fetch.
+  sub vcl_recv {
+    if (req.request == "PURGE") {
+      if (!client.ip ~ purge) {
+        error 405 "Not allowed";
+      }
+
+      if (req.backend.healthy) {
+        ban("req.http.host == " + req.http.host + " && req.url ~ " + req.url + "$");
+        error 200 "Purged.";
+      } else {
+        error 500 "Wordprez Server Error";
+      }
+    }
+
+    if (req.restarts == 0) {
+      set req.backend = default;
+    } else {
+      set req.backend = fail;
+    }
+    set req.grace = 24h; 
+  }
+
+sub vcl_fetch {
+  # This >= 500 probably never actually happens because it goes to error instead.
+    if (beresp.status >= 500) {
+      set beresp.saintmode = 5m;
+      return(restart);
+    }
+
+  # The default ttl is actually 2 minutes, so we're staying at that. Grace is
+  # the time we will keep cache around. 
+    set beresp.ttl = 2m;
+  set beresp.grace = 24h; 
+}
+
+sub vcl_error {
+  if (req.restarts == 0) {
+    return (restart);
+  }
+}
