@@ -11,4 +11,4 @@ script:
 - "./packer validate packer.json"
 deploy:
   provider: script
-  script: deploy.sh
+  script: "./deploy.sh"
