@@ -10,5 +10,6 @@ install:
 script:
 - "./packer validate packer.json"
 deploy:
+  skip_cleanup: true
   provider: script
   script: "./deploy.sh"
