@@ -1,72 +1,40 @@
-# As of 2016-07-15, we use varnish 3.0.5
+#
+# This is an example VCL file for Varnish.
+#
+# It does not do anything by default, delegating control to the
+# builtin VCL. The builtin VCL is called when there is no explicit
+# return statement.
+#
+# See the VCL chapters in the Users Guide at https://www.varnish-cache.org/docs/
+# and http://varnish-cache.org/trac/wiki/VCLExamples for more examples.
 
-# This default backend is proxying to nginx which is proxying to Wordprez.
-  backend default {
+# Marker to tell the VCL compiler that this VCL has been adapted to the
+# new 4.0 format.
+vcl 4.0;
+
+# Default backend definition. Set this to point to your content server.
+backend default {
     .host = "127.0.0.1";
     .port = "8080";
-    .probe = {
-      # Every 5 seconds, make sure we can get all slugs in under 150ms
-      .url = "{{ daemon_env_vars.PROBE_URL }}";
-      .timeout = 2s;
-      .interval = 5s;
-
-      # Of the last 10 requests, 8 need to be healthy.
-      .window = 10;
-      .threshold = 8;
-    }
-  }
-
-# Horrible hack to make grace work faster on error (since saint doesn't work then).  Source: http://book.varnish-software.com/3.0/Saving_a_request.html
-backend fail {
-  .host = "127.0.0.1";
-  .port = "21121";
-  .probe = { .url = "/asfasfasf"; .initial = 0; .interval = 1d; }
 }
 
-acl purge {
-  "localhost";
-  "10.3.0.0"/16;
-  "10.4.0.0"/16;
+sub vcl_recv {
+    # Happens before we check if we have this in cache already.
+    # 
+    # Typically you clean up the request here, removing cookies you don't need,
+    # rewriting the request, etc.
 }
 
-# Grace needs to be the same in here and in fetch.
-  sub vcl_recv {
-    if (req.request == "PURGE") {
-      if (!client.ip ~ purge) {
-        error 405 "Not allowed";
-      }
-
-      if (req.backend.healthy) {
-        ban("req.http.host == " + req.http.host + " && req.url ~ " + req.url + "$");
-        error 200 "Purged.";
-      } else {
-        error 500 "Wordprez Server Error";
-      }
-    }
-
-    if (req.restarts == 0) {
-      set req.backend = default;
-    } else {
-      set req.backend = fail;
-    }
-    set req.grace = 24h; 
-  }
-
-sub vcl_fetch {
-  # This >= 500 probably never actually happens because it goes to error instead.
-    if (beresp.status >= 500) {
-      set beresp.saintmode = 5m;
-      return(restart);
-    }
-
-  # The default ttl is actually 2 minutes, so we're staying at that. Grace is
-  # the time we will keep cache around. 
-    set beresp.ttl = 2m;
-  set beresp.grace = 24h; 
+sub vcl_backend_response {
+    # Happens after we have read the response headers from the backend.
+    # 
+    # Here you clean the response headers, removing silly Set-Cookie headers
+    # and other mistakes your backend does.
 }
 
-sub vcl_error {
-  if (req.restarts == 0) {
-    return (restart);
-  }
+sub vcl_deliver {
+    # Happens when we have all the pieces we need, and are about to send the
+    # response to the client.
+    # 
+    # You can do accounting or modifying the final object here.
 }
