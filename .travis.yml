@@ -9,3 +9,6 @@ install:
 - ls -al
 script:
 - "./packer validate packer.json"
+deploy:
+  provider: script
+  script: deploy.sh

@@ -1,6 +1,7 @@
 {
   "variables": {
     "account_file": ""
+    "tag": "local"
   },
   "builders": [{
     "type": "googlecompute",
@@ -8,6 +9,7 @@
     "project_id": "icco-cloud",
     "source_image": "debian-8-jessie-v20161129",
     "ssh_username": "packer",
+    "image_name": "onesie-{{user `tag`}}",
     "zone": "us-central1-c"
   }],
   "provisioners": [{
