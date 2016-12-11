@@ -1,6 +1,6 @@
 {
   "variables": {
-    "account_file": ""
+    "account_file": "",
     "tag": "local"
   },
   "builders": [{
