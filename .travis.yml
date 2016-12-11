@@ -1,8 +1,8 @@
 language: go
-addons:
-  apt:
-    packages:
-    - packer
+sudo: true
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y packer
 install: true
 script:
 - packer validate packer.json
