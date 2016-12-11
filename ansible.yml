@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  sudo: yes
+  gather_facts: no
   tasks:
   - shell: echo "hello world"
 
