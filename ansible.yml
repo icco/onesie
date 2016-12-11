@@ -2,3 +2,35 @@
 - hosts: all
   tasks:
   - shell: echo "hello world"
+
+  - name: Install base nginx config
+    template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
+    notify: restart nginx
+
+  - name: install varnish vcl
+    template: src=templates/varnish.vcl.j2 dest=/etc/varnish/onesie.vcl mode=0644
+    notify: restart varnish
+
+  - name: install varnish config
+    template: src=templates/varnish.conf.j2 dest=/etc/default/varnish mode=0644
+    notify: restart varnish
+
+  - name: Ensure nginx started
+    service:
+      name: nginx
+      state: started
+
+  - name: Ensure varnish started
+    service:
+      name: varnish
+      state: started
+
+  handlers:
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
+  - name: restart varnish
+    service:
+      name: varnish
+      state: restarted
