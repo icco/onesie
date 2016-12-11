@@ -7,6 +7,18 @@
     template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
     notify: restart nginx
 
+  - name: Install application nginx config
+    template: src=templates/nginx_site.conf.j2 dest=/etc/nginx/sites-available/onesie.conf force=true
+    notify: restart nginx
+
+  - name: Enable application nginx site
+    file: src=/etc/nginx/sites-available/onesie.conf dest=/etc/nginx/sites-enabled/onesie.conf state=link
+    notify: restart nginx
+
+  - name: Remove default nginx site
+    file: path=/etc/nginx/sites-enabled/default state=absent
+    notify: restart nginx
+
   - name: install varnish vcl
     template: src=templates/varnish.vcl.j2 dest=/etc/varnish/onesie.vcl mode=0644
     notify: restart varnish
