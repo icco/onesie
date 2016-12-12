@@ -26,7 +26,7 @@
     notify: restart varnish
 
   - name: install varnish config
-    template: src=templates/varnish.conf.j2 dest=/etc/default/varnish mode=0644
+    template: src=templates/varnish.conf.j2 dest=/etc/systemd/system/varnish.service mode=0644
     notify: restart varnish
 
   - name: Ensure nginx started
