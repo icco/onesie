@@ -18,13 +18,24 @@ backend default {
     .port = "8080";
 }
 
+acl localnetwork {
+  "localhost";
+  "10.0.0.0/8";
+  "104.198.128.22/32";
+}
+
+
 # Happens before we check if we have this in cache already.
 #
 # Typically you clean up the request here, removing cookies you don't need,
 # rewriting the request, etc.
 sub vcl_recv {
+  if (std.ip(req.http.host, "") ~ localnetwork) {
+    return(synth(200, "Not a host check."))
+  }
+
   set req.backend_hint = default;
-  set req.url = "/" + req.http.host + req.url;
+  set req.url = "/onesie/" + std.tolower(req.http.host) + req.url;
 }
 
 # Happens after we have read the response headers from the backend.
