@@ -23,6 +23,9 @@ backend default {
 # Typically you clean up the request here, removing cookies you don't need,
 # rewriting the request, etc.
 sub vcl_recv {
+  set req.http.host = "storage.googleapis.com";
+  set req.backend = default;
+  set req.url = "/" req.http.host req.url.path;
 }
 
 # Happens after we have read the response headers from the backend.
