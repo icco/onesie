@@ -5,8 +5,8 @@ Description=Varnish HTTP accelerator
 Type=forking
 LimitNOFILE=131072
 LimitMEMLOCK=82000
-ExecStartPre=/usr/sbin/varnishd -C -f /etc/varnish/default.vcl
-ExecStart=/usr/sbin/varnishd -a :6081 -T localhost:80 -f /etc/varnish/onesie.vcl -S /etc/varnish/secret -s malloc,1G
+ExecStartPre=/usr/sbin/varnishd -C -f /etc/varnish/onesie.vcl
+ExecStart=/usr/sbin/varnishd -a :80 -T localhost:6082 -f /etc/varnish/onesie.vcl -S /etc/varnish/secret -s malloc,1G
 ExecReload=/usr/share/varnish/reload-vcl
 
 [Install]
