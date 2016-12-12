@@ -24,8 +24,7 @@ backend default {
 # rewriting the request, etc.
 sub vcl_recv {
   set req.http.host = "storage.googleapis.com";
-  set req.backend = default;
-  set req.url = "/" req.http.host req.url.path;
+  set req.url = "/" + req.http.host + req.url;
 }
 
 # Happens after we have read the response headers from the backend.
