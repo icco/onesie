@@ -16,6 +16,10 @@ backend default {
 # rewriting the request, etc.
 sub vcl_recv {
   set req.backend_hint = default;
+  set req.url = regsub(req.url, "\?.*", "");
+  if (req.url ~ "/$") {
+    set req.url = req.url + "index.html";
+  }
   set req.url = "/onesie/" + std.tolower(req.http.Host) + req.url;
 }
 
