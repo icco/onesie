@@ -21,12 +21,12 @@ acl localnetwork {
 # Typically you clean up the request here, removing cookies you don't need,
 # rewriting the request, etc.
 sub vcl_recv {
-  if (std.ip(req.http.host, "0.0.0.0") ~ localnetwork) {
+  if (std.ip(req.http.Host, "0.0.0.0") ~ localnetwork) {
     return(synth(200, "Not a host check."));
   }
 
   set req.backend_hint = default;
-  set req.url = "/onesie/" + std.tolower(req.http.host) + req.url;
+  set req.url = "/onesie/" + std.tolower(req.http.Host) + req.url;
 }
 
 # Happens after we have read the response headers from the backend.
