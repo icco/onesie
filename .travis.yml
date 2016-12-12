@@ -1,5 +1,5 @@
 language: go
-sudo: true
+sudo: false
 before_install:
 - openssl aes-256-cbc -K $encrypted_f78647d3d495_key -iv $encrypted_f78647d3d495_iv
   -in onesie.json.enc -out onesie.json -d
