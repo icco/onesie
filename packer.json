@@ -7,7 +7,7 @@
     "type": "googlecompute",
     "account_file": "{{user `account_file`}}",
     "project_id": "icco-cloud",
-    "source_image": "debian-8-jessie-v20161129",
+    "source_image": "debian-8-jessie-v20161215",
     "ssh_username": "packer",
     "image_family": "onesie",
     "zone": "us-central1-c"
