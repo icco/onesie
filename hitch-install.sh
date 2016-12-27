@@ -6,3 +6,4 @@ cd hitch
 ./configure
 ls -al *
 make
+sudo make install
