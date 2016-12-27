@@ -1,9 +1,8 @@
 #! /bin/bash
 
-cd /tmp
-git clone https://anonscm.debian.org/git/collab-maint/hitch.git -b jessie-backports
+git clone https://github.com/varnish/hitch.git
 cd hitch
-sudo aptitude install -y libev-dev libssl-dev automake python-docutils flex bison pkg-config
+./bootstrap
 ./configure
 ls -al *
 make

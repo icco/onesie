@@ -15,9 +15,20 @@
     apt:
       name: git
 
-  - name: install "python-docutils" package
-    apt:
+  - apt:
       name: python-docutils
+  - apt:
+      name: libev-dev
+  - apt:
+      name: libssl-dev
+  - apt:
+      name: automake
+  - apt:
+      name: flex
+  - apt:
+      name: bison
+  - apt:
+      name: pkg-config
 
   - name: install "hitch" package
     shell: ./hitch-install.sh
