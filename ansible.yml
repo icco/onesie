@@ -11,6 +11,10 @@
     apt:
       name: nginx
 
+  - name: install "git" package
+    apt:
+      name: git
+
   - name: install "hitch" package
     shell: ./hitch-install.sh
 
