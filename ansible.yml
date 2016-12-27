@@ -15,6 +15,10 @@
     apt:
       name: git
 
+  - name: install "python-docutils" package
+    apt:
+      name: python-docutils
+
   - name: install "hitch" package
     shell: ./hitch-install.sh
 
