@@ -17,7 +17,8 @@
       "type": "shell",
       "inline": [
         "sudo apt-get update",
-        "sudo apt-get install -y ansible build-essential aptitude varnish nginx vim acmetool ruby hitch"
+        "sudo apt-get upgrade",
+        "sudo apt-get install -y ansible build-essential aptitude vim"
       ]
     },
     {

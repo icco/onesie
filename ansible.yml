@@ -5,6 +5,18 @@
   tasks:
   - shell: echo "hello world"
 
+  - name: Update repositories cache and install "varnish" package
+    apt:
+      name: varnish
+
+  - name: Update repositories cache and install "nginx" package
+    apt:
+      name: nginx
+
+  - name: Update repositories cache and install "hitch" package
+    apt:
+      name: hitch
+
   - name: Install base nginx config
     template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
     notify: restart nginx
