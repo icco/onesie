@@ -3,18 +3,26 @@
   sudo: yes
   gather_facts: no
   tasks:
-  - name: install "varnish" package
-    apt:
+  - name: "Create /opt"
+    file:
+      path: /opt
+      state: directory
+      mode: 0755
+
+  - name: Install gcsfuse
+    template: src=templates/gcsfuse.list dest=/etc/apt/sources.list.d/gcsfuse.list
+
+  - apt:
+      name: gcsfuse
+      update_cache: yes
+      install_recommends: yes
+  - apt:
       name: varnish
-
-  - name: install "nginx" package
-    apt:
+      install_recommends: yes
+  - apt:
       name: nginx
-
-  - name: install "git" package
-    apt:
+  - apt:
       name: git
-
   - apt:
       name: python-docutils
   - apt:
@@ -32,6 +40,11 @@
 
   - name: install "hitch" package
     shell: ./hitch-install.sh
+
+  - name: Clone dehydrated
+    git:
+      repo: https://github.com/lukas2511/dehydrated.git
+      dest: /opt/dehydrated
 
   - name: Install base nginx config
     template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
