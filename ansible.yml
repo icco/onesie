@@ -9,6 +9,15 @@
       state: directory
       mode: 0755
 
+  - name: Setup www-data group
+    group: name=www-data state=present
+
+  - name: Setup www-data user
+    user: name=www-data group=www-data state=present
+
+  - name: Setup varnish user
+    user: name=varnish group=www-data state=present append=yes
+
   - name: Install gcsfuse
     template: src=templates/gcsfuse.list dest=/etc/apt/sources.list.d/gcsfuse.list
 
@@ -47,7 +56,7 @@
       dest: /opt/dehydrated
 
   - name: Configure gcsfuse
-    shell: gcsfuse onesie-configs /opt/onesie-configs
+    shell: "sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/"
 
   - name: Install base nginx config
     template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
