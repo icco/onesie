@@ -12,6 +12,9 @@
   - name: Setup www-data group
     group: name=www-data state=present
 
+  - name: Setup varnish group
+    group: name=varnish state=present
+
   - name: Setup www-data user
     user: name=www-data group=www-data state=present
 
