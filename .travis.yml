@@ -8,8 +8,8 @@ before_install:
 install:
 - ls -al
 script:
-- "./packer validate packer.json"
 - "make"
+- "./packer validate packer.json"
 deploy:
   skip_cleanup: true
   provider: script
