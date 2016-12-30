@@ -14,11 +14,6 @@
   }],
   "provisioners": [
     {
-      "type": "file",
-      "source": "wrkr",
-      "destination": "/opt/"
-    },
-    {
       "type": "shell",
       "inline": [
         "sudo apt-get update",
@@ -30,6 +25,11 @@
       "type": "ansible-local",
       "playbook_file": "ansible.yml",
       "playbook_dir": "."
+    },
+    {
+      "type": "file",
+      "source": "wrkr",
+      "destination": "/opt/"
     }
   ]
 }
