@@ -103,6 +103,11 @@
       name: varnish
       state: started
 
+  - name: install update cron
+  - cron:
+      name: "pull updates off of sub"
+      job: "/opt/wrkr >> /var/log/wrkr.log"
+
   handlers:
   - name: restart nginx
     service:
