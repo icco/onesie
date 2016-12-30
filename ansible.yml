@@ -5,9 +5,14 @@
   tasks:
   - name: "Create /opt"
     file:
-      path: /opt/onesie-configs
+      path: /opt
       state: directory
       mode: 0777
+  - name: "Create /opt"
+    file:
+      path: /opt/onesie-configs
+      state: directory
+      mode: 0755
 
   - name: Setup www-data group
     group: name=www-data state=present
