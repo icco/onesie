@@ -9,6 +9,7 @@ install:
 - ls -al
 script:
 - "./packer validate packer.json"
+- "make"
 deploy:
   skip_cleanup: true
   provider: script
