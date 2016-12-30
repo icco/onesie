@@ -27,12 +27,6 @@
       "playbook_dir": "."
     },
     {
-      "type": "shell",
-      "inline": [
-        "ls -al /opt"
-      ]
-    },
-    {
       "type": "file",
       "source": "wrkr",
       "destination": "/opt/"
