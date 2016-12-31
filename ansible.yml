@@ -106,7 +106,7 @@
   - name: install update cron
     cron:
       name: "pull updates off of sub"
-      job: "/opt/wrkr >> /var/log/wrkr.log"
+      job: "/opt/wrkr >> /var/log/wrkr.log 2>&1"
 
   handlers:
   - name: restart nginx
