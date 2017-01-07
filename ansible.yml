@@ -66,6 +66,12 @@
   - name: Configure gcsfuse
     shell: "sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/"
 
+  - name: append to fstab
+    lineinfile:
+      dest: /etc/fstab
+      line: "onesie-configs /opt/onesie-configs fuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0"
+      state: present
+
   - name: Install dehydrated config
     template: src=templates/dehydrated.conf.j2 dest=/opt/onesie-configs/dehydrated.conf force=true
 
