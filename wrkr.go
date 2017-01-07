@@ -56,7 +56,7 @@ func main() {
 
 		if msgStr == "update" {
 			// Create an *exec.Cmd
-			out, err := exec.Command("/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf").Output()
+			out, err := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf").Output()
 			if err != nil {
 				log.Printf("Error running command: %+v", err)
 			}
