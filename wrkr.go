@@ -14,7 +14,7 @@ const updateTopicString string = "onesie-updates"
 const updateSub string = "onesie-server"
 
 func main() {
-	log.Println("Hello")
+	log.Println("Starting")
 	pubsubClient, err := pubsub.NewClient(context.Background(), "940380154622")
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
@@ -44,6 +44,7 @@ func main() {
 	for i := 0; i < 1; i++ {
 		msg, err := it.Next()
 		if err == iterator.Done {
+			log.Println("No more messages")
 			break
 		}
 		if err != nil {
@@ -51,7 +52,10 @@ func main() {
 			break
 		}
 
-		if string(msg.Data) == "update" {
+		msgStr := string(msg.Data)
+		log.Printf("Recieved Message: %+v", msgStr)
+
+		if msgStr == "update" {
 			// Create an *exec.Cmd
 			cmd := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf")
 
