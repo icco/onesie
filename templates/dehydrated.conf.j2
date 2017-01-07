@@ -1,19 +1,13 @@
 ########################################################
 # This is the main config file for dehydrated          #
 #                                                      #
-# This file is looked for in the following locations:  #
-# $SCRIPTDIR/config (next to this script)              #
-# /usr/local/etc/dehydrated/config                     #
-# /etc/dehydrated/config                               #
-# ${PWD}/config (in current working-directory)         #
-#                                                      #
 # Default values of this config are in comments        #
 ########################################################
 
 # Resolve names to addresses of IP version only. (curl)
 # supported values: 4, 6
 # default: <unset>
-#IP_VERSION=
+IP_VERSION=4
 
 # Path to certificate authority (default: https://acme-v01.api.letsencrypt.org/directory)
 #CA="https://acme-v01.api.letsencrypt.org/directory"
@@ -22,7 +16,7 @@
 #LICENSE="https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf"
 
 # Which challenge should be used? Currently http-01 and dns-01 are supported
-#CHALLENGETYPE="http-01"
+CHALLENGETYPE="http-01"
 
 # Path to a directory containing additional config files, allowing to override
 # the defaults found in the main configuration file. Additional config files
@@ -31,7 +25,7 @@
 #CONFIG_D=
 
 # Base directory for account key, generated certificates and list of domains (default: $SCRIPTDIR -- uses config directory if undefined)
-#BASEDIR=$SCRIPTDIR
+BASEDIR=/opt/onesie-configs
 
 # File containing the list of domains to request certificates for (default: $BASEDIR/domains.txt)
 #DOMAINS_TXT="${BASEDIR}/domains.txt"
@@ -43,7 +37,7 @@
 #ACCOUNTDIR="${BASEDIR}/accounts"
 
 # Output directory for challenge-tokens to be served by webserver or deployed in HOOK (default: /var/www/dehydrated)
-#WELLKNOWN="/var/www/dehydrated"
+WELLKNOWN="${BASEDIR}/www"
 
 # Default keysize for private keys (default: 4096)
 #KEYSIZE="4096"
@@ -79,7 +73,7 @@
 #KEY_ALGO=rsa
 
 # E-mail to use during the registration (default: <unset>)
-#CONTACT_EMAIL=
+CONTACT_EMAIL=nat+onesie@natwelch.com
 
 # Lockfile location, to prevent concurrent access (default: $BASEDIR/lock)
 #LOCKFILE="${BASEDIR}/lock"
