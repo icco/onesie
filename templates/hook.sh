@@ -19,6 +19,11 @@ deploy_challenge() {
     #   validation, this is what you want to put in the _acme-challenge
     #   TXT record. For HTTP validation it is the value that is expected
     #   be found in the $TOKEN_FILENAME file.
+
+    echo "${TOKEN_VALUE}" > ${BASEDIR}/www/.well-known/acme-challenge/${TOKEN_FILENAME}
+    sleep 10
+    gsutil acl set -raf public-read gs://onesie-configs/www/
+    sleep 10
 }
 
 clean_challenge() {
@@ -29,6 +34,7 @@ clean_challenge() {
     # files or DNS records that are no longer needed.
     #
     # The parameters are the same as for deploy_challenge.
+    rm ${BASEDIR}/www/.well-known/acme-challenge/${TOKEN_FILENAME}
 }
 
 deploy_cert() {
