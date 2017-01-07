@@ -36,7 +36,7 @@ func main() {
 	// Construct the iterator
 	it, err := sub.Pull(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error getting messages: %+v", err)
 	}
 	defer it.Stop()
 
@@ -44,11 +44,11 @@ func main() {
 	for i := 0; i < 1; i++ {
 		msg, err := it.Next()
 		if err == iterator.Done {
-			log.Println("No more messages")
+			log.Println("No more messages.")
 			break
 		}
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("Error while getting message: %+v", err)
 			break
 		}
 
@@ -67,11 +67,13 @@ func main() {
 			// Execute command
 			err := cmd.Run() // will wait for command to return
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("Error running command: %+v", err)
 			}
 			// Only output the commands stdout
 			log.Println(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
 		}
 		msg.Done(true)
 	}
+
+	log.Println("Finished.")
 }
