@@ -53,7 +53,7 @@ func main() {
 
 		if string(msg.Data) == "update" {
 			// Create an *exec.Cmd
-			cmd := exec.Command("/opt/dehydrated/dehydrated", "-c --config=/opt/onesie-configs/dehydrated.conf")
+			cmd := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf")
 
 			// Stdout buffer
 			cmdOutput := &bytes.Buffer{}
