@@ -57,20 +57,11 @@ func main() {
 
 		if msgStr == "update" {
 			// Create an *exec.Cmd
-			cmd := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf")
-
-			// Stdout buffer
-			cmdOutput := &bytes.Buffer{}
-			// Attach buffer to command
-			cmd.Stdout = cmdOutput
-
-			// Execute command
-			err := cmd.Run() // will wait for command to return
+			out, err := exec.Command("/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf").Output()
 			if err != nil {
 				log.Printf("Error running command: %+v", err)
 			}
-			// Only output the commands stdout
-			log.Println(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
+			log.Println(out)
 		}
 		msg.Done(true)
 	}
