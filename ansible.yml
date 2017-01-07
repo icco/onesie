@@ -69,7 +69,7 @@
   - name: append to fstab
     lineinfile:
       dest: /etc/fstab
-      line: "onesie-configs /opt/onesie-configs fuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0"
+      line: "onesie-configs /opt/onesie-configs gcsfuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0"
       state: present
 
   - name: Install dehydrated config
