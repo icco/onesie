@@ -67,7 +67,7 @@ func main() {
 			// Execute command
 			err := cmd.Run() // will wait for command to return
 			if err != nil {
-				log.Fatal("Error running command: %+v", err)
+				log.Printf("Error running command: %+v", err)
 			}
 			// Only output the commands stdout
 			log.Println(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
