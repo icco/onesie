@@ -19,7 +19,7 @@ sub vcl_recv {
 
   if (req.url ~ "^/.well-known/acme-challenge/") {
     set req.url = "/onesie-configs/www" + req.url;
-    return (lookup);
+    return (hash);
   }
 
   set req.url = regsub(req.url, "\?.*", "");
