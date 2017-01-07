@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"log"
+	"os/exec"
 
 	"cloud.google.com/go/pubsub"
 	"google.golang.org/api/iterator"
@@ -49,7 +51,23 @@ func main() {
 			break
 		}
 
-		log.Print("got message: ", string(msg.Data))
+		if string(msg.Data) == "update" {
+			// Create an *exec.Cmd
+			cmd := exec.Command("/opt/dehydrated/dehydrated", "-c --config=/opt/onesie-configs/dehydrated.conf")
+
+			// Stdout buffer
+			cmdOutput := &bytes.Buffer{}
+			// Attach buffer to command
+			cmd.Stdout = cmdOutput
+
+			// Execute command
+			err := cmd.Run() // will wait for command to return
+			if err != nil {
+				log.Fatal(err)
+			}
+			// Only output the commands stdout
+			log.Println(cmdOutput.Bytes()) // => go version go1.3 darwin/amd64
+		}
 		msg.Done(true)
 	}
 }
