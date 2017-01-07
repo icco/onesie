@@ -122,6 +122,11 @@
       name: "pull updates off of sub"
       job: "/opt/wrkr >> /var/log/wrkr.log 2>&1"
 
+  - name: install public cron
+    cron:
+      name: "make all www public"
+      job: "gsutil acl set -raf public-read gs://onesie-configs/www/ >> /var/log/public-cron.log 2>&1"
+
   handlers:
   - name: restart nginx
     service:
