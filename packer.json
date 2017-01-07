@@ -11,10 +11,7 @@
     "ssh_username": "packer",
     "image_name": "onesie-image-{{timestamp}}",
     "image_family": "onesie",
-    "zone": "us-central1-c",
-    "metadata": {
-      "startup-script": "#! /bin/bash\n\nsudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/"
-    }
+    "zone": "us-central1-c"
   }],
   "provisioners": [
     {

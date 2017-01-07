@@ -1,8 +1,8 @@
-creationTimestamp: '2016-12-31T07:45:10.989-08:00'
+creationTimestamp: '2017-01-07T12:56:04.632-08:00'
 description: ''
-id: '1677222853479132265'
+id: '8332213926319942411'
 kind: compute#instanceTemplate
-name: onesie-template-3
+name: onesie-template
 properties:
   canIpForward: false
   disks:
@@ -15,7 +15,14 @@ properties:
     type: PERSISTENT
   machineType: n1-standard-1
   metadata:
-    fingerprint: xdEWMsfq4Zs=
+    fingerprint: B9ePFMTqbjw=
+    items:
+    - key: startup-script
+      value: |-
+        #! /bin/bash
+        sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/
+        echo "mounted!"
+        ls -al /opt/onesie-configs/
     kind: compute#metadata
   networkInterfaces:
   - accessConfigs:
@@ -39,4 +46,4 @@ properties:
     - https://www.googleapis.com/auth/pubsub
     - https://www.googleapis.com/auth/service.management.readonly
     - https://www.googleapis.com/auth/servicecontrol
-selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template-3
+selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template
