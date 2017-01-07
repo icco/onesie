@@ -34,7 +34,6 @@ clean_challenge() {
     # files or DNS records that are no longer needed.
     #
     # The parameters are the same as for deploy_challenge.
-    rm ${BASEDIR}/www/.well-known/acme-challenge/${TOKEN_FILENAME}
 }
 
 deploy_cert() {
