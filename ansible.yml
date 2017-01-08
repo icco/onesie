@@ -133,6 +133,12 @@
       job: "/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf >> /var/log/dehydrated.log 2>&1"
       minute: "*/10"
 
+  - name: install another cron
+    cron:
+      name: "pem generator"
+      job: "for i in $(ls /opt/onesie-configs/certs/); do echo $i; cat /opt/onesie-configs/certs/$i/{privkey,fullchain}.pem /opt/onesie-configs/dhparam.pem > /opt/onesie-configs/hitch/$i.pem; done"
+      minute: "*/10"
+
   handlers:
   - name: restart nginx
     service:
