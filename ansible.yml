@@ -125,6 +125,12 @@
       name: "pull updates off of sub"
       job: "/opt/wrkr >> /var/log/wrkr.log 2>&1"
 
+  - name: install dehydrated cron
+    cron:
+      name: "dehydrated cron"
+      job: "/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf >> /var/log/dehydrated.log 2>&1"
+      minute: "*/10"
+
   handlers:
   - name: restart nginx
     service:
