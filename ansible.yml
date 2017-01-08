@@ -58,9 +58,10 @@
       name: fail2ban
   - apt:
       name: logrotate
-
-  - name: install "hitch" package
-    shell: ./hitch-install.sh
+  - apt:
+      name: hitch
+      update_cache: yes
+      install_recommends: yes
 
   - name: Clone dehydrated
     git:
@@ -69,13 +70,6 @@
 
   - name: Configure gcsfuse
     shell: "sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/"
-
-# Never got this to actually mount on boot
-# - name: append to fstab
-#   lineinfile:
-#     dest: /etc/fstab
-#     line: "onesie-configs /opt/onesie-configs gcsfuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0"
-#     state: present
 
   - name: Install dehydrated config
     template: src=templates/dehydrated.conf.j2 dest=/opt/onesie-configs/dehydrated.conf force=true
@@ -106,6 +100,14 @@
   - name: install varnish config
     template: src=templates/varnish.conf.j2 dest=/etc/systemd/system/varnish.service mode=0644
     notify: restart varnish
+
+  - name: link hitch config
+    file:
+      src: /opt/onesie-configs/hitch.conf
+      dest: /etc/hitch/hitch.conf
+      owner: root
+      group: root
+      state: link
 
   - shell: systemctl daemon-reload
     notify: restart varnish
