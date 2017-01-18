@@ -26,6 +26,12 @@
   - name: Setup varnish user
     user: name=varnish group=www-data state=present append=yes
 
+  - name: Setup varnish user
+    user: name=varnish groups=www-data,varnish state=present append=yes
+
+  - name: Setup varnishlog user
+    user: name=varnishlog group=varnish state=present append=yes
+
   - name: Install gcsfuse
     template: src=templates/gcsfuse.list dest=/etc/apt/sources.list.d/gcsfuse.list
 
