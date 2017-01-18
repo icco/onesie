@@ -1,8 +1,8 @@
-creationTimestamp: '2017-01-18T09:12:37.533-08:00'
+creationTimestamp: '2017-01-18T15:11:30.931-08:00'
 description: ''
-id: '3029306793375440106'
+id: '1692861997635487949'
 kind: compute#instanceTemplate
-name: onesie-template-2
+name: onesie-template
 properties:
   canIpForward: false
   disks:
@@ -15,7 +15,7 @@ properties:
     type: PERSISTENT
   machineType: n1-standard-1
   metadata:
-    fingerprint: RMhIXjJAZBI=
+    fingerprint: kvujb5HuPTg=
     items:
     - key: startup-script
       value: |-
@@ -27,9 +27,10 @@ properties:
         ls -al /opt/onesie-configs/
 
         # Fix varnish log
-        sudo systemctl restart varnish*
         sudo chown -R varnish:varnish /var/lib/varnish
-        sudo systemctl restart varnish*
+        sudo systemctl restart varnish
+        sudo systemctl restart varnishlog
+        sudo systemctl status varnish*
     kind: compute#metadata
   networkInterfaces:
   - accessConfigs:
@@ -54,4 +55,4 @@ properties:
     - https://www.googleapis.com/auth/pubsub
     - https://www.googleapis.com/auth/service.management.readonly
     - https://www.googleapis.com/auth/servicecontrol
-selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template-2
+selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template

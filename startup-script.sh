@@ -6,6 +6,7 @@ echo "mounted!"
 ls -al /opt/onesie-configs/
 
 # Fix varnish log
-sudo systemctl restart varnish*
 sudo chown -R varnish:varnish /var/lib/varnish
-sudo systemctl restart varnish*
+sudo systemctl restart varnish
+sudo systemctl restart varnishlog
+sudo systemctl status varnish*
