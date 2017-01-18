@@ -12,7 +12,7 @@ import (
 func main() {
 	r := gin.Default()
 	r.GET("/.well-known/onesie/status.json", func(c *gin.Context) {
-		conn, err := dbus.New()
+		conn, err := dbus.NewSystemdConnection()
 		if err != nil {
 			log.Fatalf("Error openning connection: %+v", err)
 		}
