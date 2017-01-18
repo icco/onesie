@@ -105,6 +105,10 @@
     template: src=templates/varnish.conf.j2 dest=/etc/systemd/system/varnish.service mode=0644
     notify: restart varnish
 
+  - name: install status-server service
+    template: src=templates/status-server.service dest=/etc/systemd/system/status-server.service mode=0644
+    notify: restart varnish
+
   - name: link hitch config
     file:
       src: /opt/onesie-configs/hitch.conf
@@ -112,6 +116,11 @@
       owner: root
       group: root
       state: link
+
+  - name: Ensure status server started
+    service:
+      name: status-server
+      state: started
 
   - shell: systemctl daemon-reload
     notify: restart varnish

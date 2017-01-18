@@ -10,11 +10,22 @@ backend gcs {
   .port = "8080";
 }
 
+# Status Server backend
+backend status {
+  .host = "127.0.0.1";
+  .port = "9090";
+}
+
 # Happens before we check if we have this in cache already.
 #
 # Typically you clean up the request here, removing cookies you don't need,
 # rewriting the request, etc.
 sub vcl_recv {
+  if (req.url ~ "^/.well-known/onesie/") {
+    set req.backend_hint = status;
+    return (hash);
+  }
+
   set req.backend_hint = gcs;
 
   if (req.url ~ "^/.well-known/acme-challenge/") {

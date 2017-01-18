@@ -1,0 +1,12 @@
+[Unit]
+Description=status server
+
+[Service]
+PIDFile=/tmp/status-server.pid
+User=root
+Group=root
+WorkingDirectory=/tmp
+ExecStart=/bin/bash -c '/opt/server'
+
+[Install]
+WantedBy=multi-user.target
