@@ -158,6 +158,12 @@
   - name: Install stackdriver monitoring
     shell: bash /opt/onesie-configs/install-stackdriver.sh
 
+  - name: fix varnish perms
+    file: dest=/var/lib/varnish owner=varnish group=varnish recurse=yes
+
+  - name: restart all varnish
+    shell: sudo systemctl restart varnish*
+
   handlers:
   - name: restart nginx
     service:
