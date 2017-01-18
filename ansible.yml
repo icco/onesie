@@ -161,11 +161,8 @@
   - name: fix varnish perms
     file: dest=/var/lib/varnish owner=varnish group=varnish recurse=yes
 
-  - name: restart all varnish
-    shell: sudo systemctl status varnish* -l
-
-  - name: restart all varnish
-    shell: sudo systemctl restart varnish*
+  - name: validate varnish
+    shell: sudo /usr/sbin/varnishd -C -f /etc/varnish/onesie.vcl
 
   handlers:
   - name: restart nginx
