@@ -137,7 +137,7 @@
     cron:
       name: "pem generator"
       job: "for i in $(ls /opt/onesie-configs/certs/); do echo $i; cat /opt/onesie-configs/certs/$i/{privkey,fullchain}.pem /opt/onesie-configs/dhparam.pem > /opt/onesie-configs/hitch/$i.pem; done"
-      minute: "*/10"
+      minute: "*/15"
 
   - name: Copy stackdriver script
     template: src=templates/stackdriver.sh dest=/opt/onesie-configs/install-stackdriver.sh mode=0755
