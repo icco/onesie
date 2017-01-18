@@ -149,7 +149,7 @@
   - name: install another cron
     cron:
       name: "pem generator"
-      job: "for i in $(ls /opt/onesie-configs/certs/); do echo $i; cat /opt/onesie-configs/certs/$i/{privkey,fullchain}.pem /opt/onesie-configs/dhparam.pem > /opt/onesie-configs/hitch/$i.pem; done >> /var/log/pem.log 2>&1"
+      job: "for i in $(ls /opt/onesie-configs/certs/); do echo $i; cat /opt/onesie-configs/certs/$i/privkey.pem /opt/onesie-configs/certs/$i/fullchain.pem /opt/onesie-configs/dhparam.pem > /opt/onesie-configs/hitch/$i.pem; done >> /var/log/pem.log 2>&1"
       minute: "*/12"
 
   - name: Copy stackdriver script
