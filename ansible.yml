@@ -162,6 +162,9 @@
     file: dest=/var/lib/varnish owner=varnish group=varnish recurse=yes
 
   - name: restart all varnish
+    shell: sudo systemctl status varnish* -l
+
+  - name: restart all varnish
     shell: sudo systemctl restart varnish*
 
   handlers:
