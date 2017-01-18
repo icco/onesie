@@ -11,6 +11,7 @@
     "ssh_username": "packer",
     "image_name": "onesie-image-{{timestamp}}",
     "image_family": "onesie",
+    "disk_size": 100,
     "zone": "us-central1-c"
   }],
   "provisioners": [
