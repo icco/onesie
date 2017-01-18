@@ -1,8 +1,8 @@
-creationTimestamp: '2017-01-07T12:56:04.632-08:00'
+creationTimestamp: '2017-01-18T09:12:37.533-08:00'
 description: ''
-id: '8332213926319942411'
+id: '3029306793375440106'
 kind: compute#instanceTemplate
-name: onesie-template
+name: onesie-template-2
 properties:
   canIpForward: false
   disks:
@@ -15,20 +15,28 @@ properties:
     type: PERSISTENT
   machineType: n1-standard-1
   metadata:
-    fingerprint: B9ePFMTqbjw=
+    fingerprint: RMhIXjJAZBI=
     items:
     - key: startup-script
       value: |-
         #! /bin/bash
+
+        # Mount configs
         sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/
         echo "mounted!"
         ls -al /opt/onesie-configs/
+
+        # Fix varnish log
+        sudo systemctl restart varnish*
+        sudo chown -R varnish:varnish /var/lib/varnish
+        sudo systemctl restart varnish*
     kind: compute#metadata
   networkInterfaces:
   - accessConfigs:
     - kind: compute#accessConfig
       name: external-nat
       type: ONE_TO_ONE_NAT
+    kind: compute#networkInterface
     network: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/networks/onesie
   scheduling:
     automaticRestart: true
@@ -46,4 +54,4 @@ properties:
     - https://www.googleapis.com/auth/pubsub
     - https://www.googleapis.com/auth/service.management.readonly
     - https://www.googleapis.com/auth/servicecontrol
-selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template
+selfLink: https://www.googleapis.com/compute/v1/projects/icco-cloud/global/instanceTemplates/onesie-template-2

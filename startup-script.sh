@@ -1,0 +1,11 @@
+#! /bin/bash
+
+# Mount configs
+sudo gcsfuse -o allow_other --uid=$(id -u www-data) --gid=$(id -g www-data) onesie-configs /opt/onesie-configs/
+echo "mounted!"
+ls -al /opt/onesie-configs/
+
+# Fix varnish log
+sudo systemctl restart varnish*
+sudo chown -R varnish:varnish /var/lib/varnish
+sudo systemctl restart varnish*
