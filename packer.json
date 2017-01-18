@@ -34,6 +34,11 @@
       "type": "file",
       "source": "wrkr",
       "destination": "/opt/"
+    },
+    {
+      "type": "file",
+      "source": "server",
+      "destination": "/opt/"
     }
   ]
 }
