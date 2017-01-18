@@ -110,7 +110,6 @@
 
   - name: install status-server service
     template: src=templates/status-server.service dest=/etc/systemd/system/status-server.service mode=0644
-    notify: restart varnish
 
   - name: link hitch config
     file:
@@ -120,13 +119,13 @@
       group: root
       state: link
 
+  - shell: systemctl daemon-reload
+    notify: restart varnish
+
   - name: Ensure status server started
     service:
       name: status-server
       state: started
-
-  - shell: systemctl daemon-reload
-    notify: restart varnish
 
   - name: Ensure nginx started
     service:
