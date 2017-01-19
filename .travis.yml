@@ -16,6 +16,7 @@ before_install:
 install:
 - ls -al
 - make get-deps
+- echo $TRAVIS_COMMIT > version.txt
 script:
 - "make"
 - "./packer validate packer.json"

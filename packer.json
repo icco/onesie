@@ -38,6 +38,11 @@
     },
     {
       "type": "file",
+      "source": "version.txt",
+      "destination": "/opt/"
+    },
+    {
+      "type": "file",
       "source": "status-server",
       "destination": "/opt/"
     }
