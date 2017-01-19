@@ -4,6 +4,9 @@ import (
 	"context"
 	"log"
 	"os/exec"
+	"strconv"
+	"strings"
+	"syscall"
 
 	"cloud.google.com/go/pubsub"
 	"google.golang.org/api/iterator"
@@ -55,12 +58,29 @@ func main() {
 		log.Printf("Recieved Message: %+v", msgStr)
 
 		if msgStr == "update" {
+			// Update certs
 			out, err := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf").Output()
 			if err != nil {
 				log.Printf("Error running command: %+v", err)
 			}
 			log.Println(out)
+
+			// Get hitch PID, send sighup
+			out, err = exec.Command("/bin/pidof", "hitch").Output()
+			if err != nil {
+				log.Printf("Error running pidof: %+v", err)
+			}
+			for _, pidStr := range strings.Split(string(out), " ") {
+				pid, err := strconv.Atoi(pidStr)
+				if err != nil {
+					log.Printf("Error parsing string: %+v", err)
+					continue
+				}
+				log.Printf("Sending SIGHUP to %+v", pid)
+				syscall.Kill(pid, syscall.SIGHUP)
+			}
 		}
+
 		msg.Done(true)
 	}
 
