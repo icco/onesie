@@ -52,4 +52,17 @@ sub vcl_backend_response {
 #
 # You can do accounting or modifying the final object here.
 sub vcl_deliver {
+
+  # Cleanup headers
+  set resp.http.Server = "Onesie";
+  unset resp.http.X-GUploader-UploadID;
+  unset resp.http.x-goog-generation;
+  unset resp.http.x-goog-metageneration;
+  unset resp.http.x-goog-stored-content-encoding;
+  unset resp.http.x-goog-stored-content-length;
+  unset resp.http.x-goog-hash;
+  unset resp.http.x-goog-hash;
+  unset resp.http.x-goog-storage-class;
+  unset resp.http.X-Varnish;
+  unset resp.http.Via;
 }
