@@ -1,14 +1,14 @@
-all: wrkr server
+all: wrkr status-server
 
 wrkr: wrkr.go
 	go build wrkr.go
 
-server: status/server.go
-	go build ./status/server.go
+status-server: status/server.go
+	go build -o status-server ./status/server.go
 
 clean:
 	rm wrkr
-	rm server
+	rm status-server
 
 get-deps:
 	go get -u -v cloud.google.com/go/...

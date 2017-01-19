@@ -3,9 +3,9 @@ Description=status server
 
 [Service]
 PIDFile=/tmp/status-server.pid
-User=www-data
-Group=www-data
-ExecStart=/opt/server
+User=root
+Group=root
+ExecStart=/opt/status-server
 
 [Install]
 WantedBy=multi-user.target

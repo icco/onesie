@@ -38,7 +38,7 @@
     },
     {
       "type": "file",
-      "source": "server",
+      "source": "status-server",
       "destination": "/opt/"
     }
   ]

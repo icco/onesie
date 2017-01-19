@@ -24,8 +24,15 @@ func main() {
 		}
 		log.Printf("Units: %+v", units)
 
+		// units: [{Name:systemd-vconsole-setup.service Description:systemd-vconsole-setup.service LoadState:not-found ActiveState:inactive SubState:dead Followed: Path:/org/freedesktop/systemd1/unit/systemd_2dvconsole_2dsetup_2eservice JobId:0 JobType: JobPath:/}]
+		services := gin.H{}
+		for _, s := range units {
+			services[s.Name] = s.ActiveState
+		}
+
 		c.JSON(200, gin.H{
-			"message": "ok",
+			"status":   "ok",
+			"services": services,
 		})
 	})
 
