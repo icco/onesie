@@ -154,13 +154,13 @@
     cron:
       name: "dehydrated cron"
       job: "/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf >> /var/log/dehydrated.log 2>&1"
-      minute: "*/10"
+      minute: "*/{{10 |random}}"
 
   - name: install pem cron
     cron:
       name: "pem generator"
       job: "/opt/pem.sh >> /var/log/pem.log 2>&1"
-      minute: "*/12"
+      minute: "*/{{10 |random}}"
 
   - name: install checker cron
     cron:
