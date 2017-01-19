@@ -166,6 +166,12 @@
   - name: validate varnish
     shell: sudo /usr/sbin/varnishd -C -f /etc/varnish/onesie.vcl
 
+  - name: enable hitch
+    shell: sudo systemctl enable hitch
+
+  - name: enable status-server
+    shell: sudo systemctl enable status-server
+
   handlers:
   - name: restart nginx
     service:
