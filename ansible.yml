@@ -89,6 +89,9 @@
   - name: Install pem generator
     template: src=templates/pem.sh dest=/opt/pem.sh force=true mode=0777
 
+  - name: Install service checker
+    template: src=templates/check-services.sh dest=/opt/check-services.sh force=true mode=0777
+
   - name: Install base nginx config
     template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
     notify: restart nginx
@@ -153,11 +156,16 @@
       job: "/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf >> /var/log/dehydrated.log 2>&1"
       minute: "*/10"
 
-  - name: install another cron
+  - name: install pem cron
     cron:
       name: "pem generator"
       job: "/opt/pem.sh >> /var/log/pem.log 2>&1"
       minute: "*/12"
+
+  - name: install checker cron
+    cron:
+      name: "service checker"
+      job: "/opt/check-services.sh >> /var/log/checker.log 2>&1"
 
   - name: Copy stackdriver script
     template: src=templates/stackdriver.sh dest=/opt/onesie-configs/install-stackdriver.sh mode=0755
