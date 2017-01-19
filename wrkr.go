@@ -59,7 +59,7 @@ func main() {
 
 		if msgStr == "update" {
 			// Get hitch PID, send sighup
-			out, err = exec.Command("/bin/pidof", "hitch").Output()
+			out, err := exec.Command("/bin/pidof", "hitch").Output()
 			if err != nil {
 				log.Printf("Error running pidof: %+v", err)
 			}
