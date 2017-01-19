@@ -13,6 +13,11 @@
       path: /opt/onesie-configs
       state: directory
       mode: 0755
+  - name: "Create /var/lib/hitch/"
+    file:
+      path: /var/lib/hitch/
+      state: directory
+      mode: 0777
 
   - name: Setup www-data group
     group: name=www-data state=present
