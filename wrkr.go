@@ -58,13 +58,6 @@ func main() {
 		log.Printf("Recieved Message: %+v", msgStr)
 
 		if msgStr == "update" {
-			// Update certs
-			out, err := exec.Command("/opt/dehydrated/dehydrated", "-c --config /opt/onesie-configs/dehydrated.conf").Output()
-			if err != nil {
-				log.Printf("Error running command: %+v", err)
-			}
-			log.Println(out)
-
 			// Get hitch PID, send sighup
 			out, err = exec.Command("/bin/pidof", "hitch").Output()
 			if err != nil {
