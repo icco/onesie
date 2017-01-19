@@ -71,7 +71,7 @@ func main() {
 				log.Printf("Error running pidof: %+v", err)
 			}
 			for _, pidStr := range strings.Split(string(out), " ") {
-				pid, err := strconv.Atoi(pidStr)
+				pid, err := strconv.Atoi(strings.TrimSpace(pidStr))
 				if err != nil {
 					log.Printf("Error parsing string: %+v", err)
 					continue
