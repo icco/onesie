@@ -24,3 +24,6 @@ deploy:
   skip_cleanup: true
   provider: script
   script: "./deploy.sh"
+  on:
+    branch: master
+    repo: "icco/onesie"
