@@ -16,13 +16,18 @@
   }],
   "provisioners": [
     {
+      "type": "file",
+      "source": "templates/nginx.list",
+      "destination": "/etc/apt/sources.list.d/"
+    },
+    {
       "type": "shell",
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive"
       ],
       "inline": [
         "sudo apt-get update",
-        "sudo apt-get install -y ansible build-essential aptitude vim"
+        "sudo apt-get install -y ansible build-essential aptitude vim nginx"
       ]
     },
     {
