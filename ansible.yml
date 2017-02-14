@@ -97,6 +97,18 @@
     template: src=templates/nginx_site.conf.j2 dest=/etc/nginx/sites-available/onesie.conf force=true
     notify: restart nginx
 
+  - name: "Create nginx dirs"
+    file:
+      path: /etc/nginx/sites-enabled
+      state: directory
+      mode: 0777
+
+  - name: "Create nginx dirs"
+    file:
+      path: /etc/nginx/sites-available
+      state: directory
+      mode: 0777
+
   - name: Enable application nginx site
     file: src=/etc/nginx/sites-available/onesie.conf dest=/etc/nginx/sites-enabled/onesie.conf state=link
     notify: restart nginx
