@@ -18,7 +18,8 @@
     {
       "type": "shell",
       "inline": [
-        "sudo chmod -R a+rwx /etc/apt/sources.list.d/"
+        "sudo chmod -R a+rwx /etc/apt/sources.list.d/",
+        "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62"
       ]
     },
     {
