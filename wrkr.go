@@ -87,7 +87,7 @@ func main() {
 				}
 
 				// Write out
-				f, err := os.OpenFile(fmt.Sprintf("/opt/onesie-configs/hitch/%s.pem", file.Name()), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+				f, err := os.OpenFile(fmt.Sprintf("/opt/onesie-configs/hitch/%s.pem", file.Name()), os.O_APPEND|os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0777)
 				if err != nil {
 					log.Printf("Error opening output pem: %+v", err)
 					continue
