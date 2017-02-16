@@ -77,28 +77,34 @@ func main() {
 				log.Printf("Parsing file: %+v", file)
 				privkey, err := ioutil.ReadFile(fmt.Sprintf("/opt/onesie-configs/certs/%s/privkey.pem", file.Name()))
 				if err != nil {
-					log.Fatalf("Error reading privkey: %+v", err)
+					log.Printf("Error reading privkey: %+v", err)
+					continue
 				}
 				fullchain, err := ioutil.ReadFile(fmt.Sprintf("/opt/onesie-configs/certs/%s/fullchain.pem", file.Name()))
 				if err != nil {
-					log.Fatalf("Error reading fullchain: %+v", err)
+					log.Printf("Error reading fullchain: %+v", err)
+					continue
 				}
 
 				// Write out
-				f, err := os.OpenFile(fmt.Sprintf("/opt/onesie-configs/hitch/%s.pem", file.Name()), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+				f, err := os.OpenFile(fmt.Sprintf("/opt/onesie-configs/hitch/%s.pem", file.Name()), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
 				if err != nil {
-					log.Fatalf("Error opening output pem: %+v", err)
+					log.Printf("Error opening output pem: %+v", err)
+					continue
 				}
 				defer f.Close()
 
 				if _, err = f.Write(privkey); err != nil {
-					log.Fatalf("Error writing output pem: %+v", err)
+					log.Printf("Error writing privkey to output pem: %+v", err)
+					continue
 				}
 				if _, err = f.Write(fullchain); err != nil {
-					log.Fatalf("Error writing output pem: %+v", err)
+					log.Printf("Error writing fullchain to output pem: %+v", err)
+					continue
 				}
 				if _, err = f.Write(dhparam); err != nil {
-					log.Fatalf("Error writing output pem: %+v", err)
+					log.Printf("Error writing dhparam to output pem: %+v", err)
+					continue
 				}
 			}
 
