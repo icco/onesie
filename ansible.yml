@@ -105,6 +105,9 @@
       state: directory
       mode: 0777
 
+  - name: remove conf.d
+    shell: sudo rm -rf /etc/nginx/conf.d
+
   - name: Install application nginx config
     template: src=templates/nginx_site.conf.j2 dest=/etc/nginx/sites-available/onesie.conf force=true
     notify: restart nginx
