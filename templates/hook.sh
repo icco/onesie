@@ -110,5 +110,9 @@ request_failure() {
     #   The kind of request that was made (GET, POST...)
 }
 
+exit_hook() {
+
+}
+
 HANDLER="$1"; shift
 "$HANDLER" "$@"
