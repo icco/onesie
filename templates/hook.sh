@@ -111,7 +111,7 @@ request_failure() {
 }
 
 exit_hook() {
-
+    local STATUSCODE="${1}" REASON="${2}" REQTYPE=${3}
 }
 
 HANDLER="$1"; shift
