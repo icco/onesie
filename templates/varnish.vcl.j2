@@ -67,6 +67,5 @@ sub vcl_deliver {
   unset resp.http.Via;
 
   # Set HSTS headers for one day
-  set resp.http.Strict-Transport-Security = "max-age=86400; includeSubDomains";
-
+  set resp.http.Strict-Transport-Security = "max-age=2592000; includeSubDomains";
 }
