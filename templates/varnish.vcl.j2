@@ -70,5 +70,14 @@ sub vcl_deliver {
   set resp.http.Strict-Transport-Security = "max-age=2592000; includeSubDomains";
 
   # Set Referer Policy
-  set resp.http.Referrer-Policy = "same-origin";
+  set resp.http.Referrer-Policy = "strict-origin-when-cross-origin";
+
+  # Disable content type sniffing (apparently dangerous?)
+  set resp.http.X-Content-Type-Options = "nosniff";
+
+  # Tell browsers to stop XSS
+  set resp.http.X-Xss-Protection = "1; mode=block";
+
+  # Block frame stuff
+  set resp.http.X-Frame-Options = "SAMEORIGIN";
 }
