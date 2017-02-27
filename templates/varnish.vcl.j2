@@ -65,4 +65,8 @@ sub vcl_deliver {
   unset resp.http.x-goog-storage-class;
   unset resp.http.X-Varnish;
   unset resp.http.Via;
+
+  # Set HSTS headers for one day
+  set resp.http.Strict-Transport-Security = "max-age=86400; includeSubDomains";
+
 }
