@@ -66,8 +66,8 @@ sub vcl_deliver {
   unset resp.http.X-Varnish;
   unset resp.http.Via;
 
-  # Set HSTS headers for one day
-  set resp.http.Strict-Transport-Security = "max-age=2592000; includeSubDomains";
+  # Set HSTS headers for two months
+  set resp.http.Strict-Transport-Security = "max-age=15768000; includeSubDomains";
 
   # Set Referer Policy
   set resp.http.Referrer-Policy = "strict-origin-when-cross-origin";
