@@ -1,12 +1,17 @@
 package main
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -64,46 +69,47 @@ func main() {
 		if msgStr == "deploy" {
 
 			// TODO: Figure out which thing to update
+			domain := msg.Attributes["domain"]
+			path := msg.Attributes["path"]
 
 			// Expand into archive
-			//archive, err := gzip.NewReader(bufr)
-			//if err != nil {
-			//	log.Panicf("Error creating gzip reader: %+v", err)
-			//}
-			//defer archive.Close()
+			archive, err := gzip.NewReader(bufr)
+			if err != nil {
+				log.Panicf("Error creating gzip reader: %+v", err)
+			}
+			defer archive.Close()
 
-			//// Go through file by file
-			//tarReader := tar.NewReader(archive)
-			//buf := make([]byte, 160)
-			//for {
-			//	header, err := tarReader.Next()
-			//	if err == io.EOF {
-			//		break
-			//	} else if err != nil {
-			//		log.Panicf("Error reading tar: %+v", err)
-			//	}
+			// Go through file by file
+			tarReader := tar.NewReader(archive)
+			buf := make([]byte, 160)
+			for {
+				header, err := tarReader.Next()
+				if err == io.EOF {
+					break
+				} else if err != nil {
+					log.Panicf("Error reading tar: %+v", err)
+				}
 
-			//	path := filepath.Join(domain, header.Name)
-			//	switch header.Typeflag {
-			//	case tar.TypeDir:
-			//		continue
-			//	case tar.TypeReg:
-			//		w := bkt.Object(path).NewWriter(c)
-			//		defer w.Close()
-			//		w.ACL = []storage.ACLRule{{Entity: storage.AllUsers, Role: storage.RoleReader}}
-			//		if filepath.Ext(path) != "" {
-			//			w.ObjectAttrs.ContentType = mime.TypeByExtension(filepath.Ext(path))
-			//		}
-			//		wrtn, err := io.CopyBuffer(w, tarReader, buf)
-			//		if err != nil {
-			//			log.Printf("Error writing data to GCS: %+v", err)
-			//		}
-			//		log.Printf("Wrote %v bytes to %s", wrtn, path)
-			//	default:
-			//		log.Printf("Unable to figure out type: %v (%s)", header.Typeflag, path)
-			//	}
-			//}
-
+				path := filepath.Join(domain, header.Name)
+				switch header.Typeflag {
+				case tar.TypeDir:
+					continue
+				case tar.TypeReg:
+					w := bkt.Object(path).NewWriter(c)
+					defer w.Close()
+					w.ACL = []storage.ACLRule{{Entity: storage.AllUsers, Role: storage.RoleReader}}
+					if filepath.Ext(path) != "" {
+						w.ObjectAttrs.ContentType = mime.TypeByExtension(filepath.Ext(path))
+					}
+					wrtn, err := io.CopyBuffer(w, tarReader, buf)
+					if err != nil {
+						log.Printf("Error writing data to GCS: %+v", err)
+					}
+					log.Printf("Wrote %v bytes to %s", wrtn, path)
+				default:
+					log.Printf("Unable to figure out type: %v (%s)", header.Typeflag, path)
+				}
+			}
 		}
 
 		if msgStr == "update" {
@@ -170,7 +176,7 @@ func main() {
 			}
 		}
 
-		msg.Done(true)
+		msg.Ack()
 	}
 
 	log.Println("Finished.")
