@@ -18,7 +18,6 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"cloud.google.com/go/storage"
-	"google.golang.org/api/iterator"
 )
 
 const updateTopicString string = "onesie-updates"
@@ -44,30 +43,22 @@ func main() {
 		}
 	}
 
-	// Construct the iterator
-	it, err := sub.Pull(context.Background())
-	if err != nil {
-		log.Fatalf("Error getting messages: %+v", err)
-	}
-	defer it.Stop()
-
-	// Consume 1 messages
-	for i := 0; i < 1; i++ {
-		msg, err := it.Next()
-		if err == iterator.Done {
-			log.Println("No more messages.")
-			break
-		}
-		if err != nil {
-			log.Printf("Error while getting message: %+v", err)
-			break
+	var mu sync.Mutex
+	received := 0
+	cctx, cancel := context.WithCancel(context.Background())
+	err := sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
+		mu.Lock()
+		defer mu.Unlock()
+		received++
+		if received >= 4 {
+			cancel()
+			msg.Nack()
+			return
 		}
 
-		msgStr := string(msg.Data)
-		log.Printf("Recieved Message: '%+v'", msgStr)
+		fmt.Printf("Got message: %q\n", string(msg.Data))
 
 		if msgStr == "deploy" {
-
 			// TODO: Figure out which thing to update
 			domain := msg.Attributes["domain"]
 			path := msg.Attributes["path"]
@@ -175,8 +166,11 @@ func main() {
 				syscall.Kill(pid, syscall.SIGHUP)
 			}
 		}
-
 		msg.Ack()
+	})
+
+	if err != nil {
+		log.Println(err)
 	}
 
 	log.Println("Finished.")
