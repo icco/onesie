@@ -59,15 +59,30 @@ func main() {
 			return
 		}
 
-		fmt.Printf("Got message: %q\n", string(msg.Data))
+		msgStr := string(msg.Data)
+		fmt.Printf("Got message: %q\n", msgStr)
 
 		if msgStr == "deploy" {
-			// TODO: Figure out which thing to update
 			domain := msg.Attributes["domain"]
 			path := msg.Attributes["path"]
+			log.Printf("Opening for archive: %s", path)
+
+			// Open google storage client
+			client, err := storage.NewClient(ctx)
+			if err != nil {
+				log.Panicf("Error connecting to Google Storage: %+v", err)
+			}
+			defer client.Close()
+			bkt := client.Bucket("onesie")
+			obj := bkt.Object(path)
+			r, err := obj.NewReader(ctx)
+			if err != nil {
+				log.Panicf("Error opening object: %+v", err)
+			}
+			defer r.Close()
 
 			// Expand into archive
-			archive, err := gzip.NewReader(bufr)
+			archive, err := gzip.NewReader(r)
 			if err != nil {
 				log.Panicf("Error creating gzip reader: %+v", err)
 			}
@@ -89,7 +104,7 @@ func main() {
 				case tar.TypeDir:
 					continue
 				case tar.TypeReg:
-					w := bkt.Object(path).NewWriter(c)
+					w := bkt.Object(path).NewWriter(ctx)
 					defer w.Close()
 					w.ACL = []storage.ACLRule{{Entity: storage.AllUsers, Role: storage.RoleReader}}
 					if filepath.Ext(path) != "" {
