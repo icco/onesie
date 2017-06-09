@@ -3,7 +3,6 @@ package main
 import (
 	"archive/tar"
 	"compress/gzip"
-	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,6 +18,7 @@ import (
 
 	"cloud.google.com/go/pubsub"
 	"cloud.google.com/go/storage"
+	"golang.org/x/net/context"
 )
 
 const updateTopicString string = "onesie-updates"
@@ -38,7 +38,9 @@ func main() {
 		log.Fatal(err)
 	}
 	if !b {
-		sub, err = pubsubClient.CreateSubscription(context.Background(), updateSub, updateTopic, 0, nil)
+		sub, err = pubsubClient.CreateSubscription(context.Background(), updateSub, pubsub.SubscriptionConfig{
+			Topic: updateTopic,
+		})
 		if err != nil {
 			log.Fatal(err)
 		}
