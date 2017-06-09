@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	"cloud.google.com/go/pubsub"
@@ -46,7 +47,7 @@ func main() {
 	var mu sync.Mutex
 	received := 0
 	cctx, cancel := context.WithCancel(context.Background())
-	err := sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
+	err = sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
 		mu.Lock()
 		defer mu.Unlock()
 		received++
