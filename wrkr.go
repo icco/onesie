@@ -1,18 +1,24 @@
 package main
 
 import (
-	"context"
+	"archive/tar"
+	"compress/gzip"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	"cloud.google.com/go/pubsub"
-	"google.golang.org/api/iterator"
+	"cloud.google.com/go/storage"
+	"golang.org/x/net/context"
 )
 
 const updateTopicString string = "onesie-updates"
@@ -32,33 +38,88 @@ func main() {
 		log.Fatal(err)
 	}
 	if !b {
-		sub, err = pubsubClient.CreateSubscription(context.Background(), updateSub, updateTopic, 0, nil)
+		sub, err = pubsubClient.CreateSubscription(context.Background(), updateSub, pubsub.SubscriptionConfig{
+			Topic: updateTopic,
+		})
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	// Construct the iterator
-	it, err := sub.Pull(context.Background())
-	if err != nil {
-		log.Fatalf("Error getting messages: %+v", err)
-	}
-	defer it.Stop()
-
-	// Consume 1 messages
-	for i := 0; i < 1; i++ {
-		msg, err := it.Next()
-		if err == iterator.Done {
-			log.Println("No more messages.")
-			break
-		}
-		if err != nil {
-			log.Printf("Error while getting message: %+v", err)
-			break
+	var mu sync.Mutex
+	received := 0
+	cctx, cancel := context.WithCancel(context.Background())
+	err = sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
+		mu.Lock()
+		defer mu.Unlock()
+		received++
+		if received >= 4 {
+			cancel()
+			msg.Nack()
+			return
 		}
 
 		msgStr := string(msg.Data)
-		log.Printf("Recieved Message: '%+v'", msgStr)
+		fmt.Printf("Got message: %q\n", msgStr)
+
+		if msgStr == "deploy" {
+			domain := msg.Attributes["domain"]
+			path := msg.Attributes["path"]
+			log.Printf("Opening for archive: %s", path)
+
+			// Open google storage client
+			client, err := storage.NewClient(ctx)
+			if err != nil {
+				log.Panicf("Error connecting to Google Storage: %+v", err)
+			}
+			defer client.Close()
+			bkt := client.Bucket("onesie")
+			obj := bkt.Object(path)
+			r, err := obj.NewReader(ctx)
+			if err != nil {
+				log.Panicf("Error opening object: %+v", err)
+			}
+			defer r.Close()
+
+			// Expand into archive
+			archive, err := gzip.NewReader(r)
+			if err != nil {
+				log.Panicf("Error creating gzip reader: %+v", err)
+			}
+			defer archive.Close()
+
+			// Go through file by file
+			tarReader := tar.NewReader(archive)
+			buf := make([]byte, 160)
+			for {
+				header, err := tarReader.Next()
+				if err == io.EOF {
+					break
+				} else if err != nil {
+					log.Panicf("Error reading tar: %+v", err)
+				}
+
+				path := filepath.Join(domain, header.Name)
+				switch header.Typeflag {
+				case tar.TypeDir:
+					continue
+				case tar.TypeReg:
+					w := bkt.Object(path).NewWriter(ctx)
+					defer w.Close()
+					w.ACL = []storage.ACLRule{{Entity: storage.AllUsers, Role: storage.RoleReader}}
+					if filepath.Ext(path) != "" {
+						w.ObjectAttrs.ContentType = mime.TypeByExtension(filepath.Ext(path))
+					}
+					wrtn, err := io.CopyBuffer(w, tarReader, buf)
+					if err != nil {
+						log.Printf("Error writing data to GCS: %+v", err)
+					}
+					log.Printf("Wrote %v bytes to %s", wrtn, path)
+				default:
+					log.Printf("Unable to figure out type: %v (%s)", header.Typeflag, path)
+				}
+			}
+		}
 
 		if msgStr == "update" {
 			// Merge Certs
@@ -123,8 +184,11 @@ func main() {
 				syscall.Kill(pid, syscall.SIGHUP)
 			}
 		}
+		msg.Ack()
+	})
 
-		msg.Done(true)
+	if err != nil {
+		log.Println(err)
 	}
 
 	log.Println("Finished.")
