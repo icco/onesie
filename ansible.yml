@@ -178,6 +178,11 @@
 
   - name: Install stackdriver monitoring
     shell: bash /opt/onesie-configs/install-stackdriver.sh
+    handler: restart fluentd
+
+  - name: Install onesie logging config
+    template: src=templates/wrkr.conf dest=/etc/google-fluentd/config.d/onesie.conf
+    handler: restart fluentd
 
   - name: fix varnish perms
     file: dest=/var/lib/varnish owner=varnish group=varnish recurse=yes
@@ -199,4 +204,8 @@
   - name: restart varnish
     service:
       name: varnish
+      state: restarted
+  - name: restart fluentd
+    service:
+      name: google-fluentd
       state: restarted
