@@ -19,6 +19,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"cloud.google.com/go/storage"
 	"golang.org/x/net/context"
+	"google.golang.org/api/iterator"
 )
 
 const updateTopicString string = "onesie-updates"
@@ -47,31 +48,31 @@ func main() {
 	}
 
 	// Make sure all files are public.
-	go func(context ctx) {
+	go func(c context.Context) {
 		// Open google storage client
-		client, err := storage.NewClient(ctx)
+		client, err := storage.NewClient(c)
 		if err != nil {
 			log.Panicf("Error connecting to Google Storage: %+v", err)
 		}
 		defer client.Close()
 		bkt := client.Bucket("onesie")
-		it := bkt.Objects(ctx, nil)
+		it := bkt.Objects(c, nil)
 		for {
-			obj, err := it.Next()
+			objAttrs, err := it.Next()
 			if err == iterator.Done {
 				break
 			}
 			if err != nil {
-				return err
+				log.Fatalf("Could not iterate: %+v", err)
 			}
 
 			// Let everyone read it.
-			if err := obj.ACL().Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
-				log.Infof("Could not set acl for %+v", obj)
-				return err
+			obj := bkt.Object(objAttrs.Name)
+			if err := obj.ACL().Set(c, storage.AllUsers, storage.RoleReader); err != nil {
+				log.Fatalf("Could not set acl for %+v", obj)
 			}
 		}
-	}(ctx)
+	}(context.Background())
 
 	var mu sync.Mutex
 	received := 0
