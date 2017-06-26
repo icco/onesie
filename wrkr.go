@@ -46,6 +46,33 @@ func main() {
 		}
 	}
 
+	// Make sure all files are public.
+	go func(context ctx) {
+		// Open google storage client
+		client, err := storage.NewClient(ctx)
+		if err != nil {
+			log.Panicf("Error connecting to Google Storage: %+v", err)
+		}
+		defer client.Close()
+		bkt := client.Bucket("onesie")
+		it := bkt.Objects(ctx, nil)
+		for {
+			obj, err := it.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			// Let everyone read it.
+			if err := obj.ACL().Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
+				log.Infof("Could not set acl for %+v", obj)
+				return err
+			}
+		}
+	}(ctx)
+
 	var mu sync.Mutex
 	received := 0
 	cctx, cancel := context.WithCancel(context.Background())
