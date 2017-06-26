@@ -166,7 +166,7 @@
     cron:
       name: "dehydrated cron"
       job: "/opt/dehydrated/dehydrated -c --config /opt/onesie-configs/dehydrated.conf >> /var/log/dehydrated.log 2>&1"
-      minute: "*/{{10 |random}}"
+      minute: "*/10"
 
   - name: install checker cron
     cron:
